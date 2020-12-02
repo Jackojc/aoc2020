@@ -1,0 +1,3 @@
+[submodule "tinge"]
+	path = tinge
+	url = https://github.com/Jackojc/tinge
