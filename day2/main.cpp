@@ -1,8 +1,12 @@
 #include <charconv>
 #include <tuple>
+#include <chrono>
 
 #include <util.hpp>
 #include <tinge.hpp>
+
+#define ANKERL_NANOBENCH_IMPLEMENT
+#include <nanobench.h>
 
 auto parseln(const char*& str) {
 	int start = util::parse_int(str);
@@ -64,19 +68,38 @@ int main(int argc, const char* argv[]) {
 	}
 
 	const auto str = util::read_file(argv[1]);
+	const char* ptr = nullptr;
 
-	const char* ptr = str.c_str();
 	try {
+		// using namespace std::chrono_literals;
+
+		// ankerl::nanobench::Bench().timeUnit(1us, "us").run("part1", [&] {
+		// 	const char* ptr = str.c_str();
+		// 	auto d = part1(ptr);
+		// 	ankerl::nanobench::doNotOptimizeAway(d);
+		// });
+
+		const char* ptr = str.c_str();
 		tinge::successln(part1(ptr));
+
 	} catch (const util::Error& e) {
 		auto [line, column] = util::calculate_position(str.c_str(), ptr);
 		tinge::errorln("error @ [", std::to_string(line), ": ", std::to_string(column), "]: ", e.what());
 		return -1;
 	}
 
-	ptr = str.c_str();
 	try {
+		// using namespace std::chrono_literals;
+
+		// ankerl::nanobench::Bench().timeUnit(1us, "us").run("part2", [&] {
+		// 	const char* ptr = str.c_str();
+		// 	auto d = part2(ptr);
+		// 	ankerl::nanobench::doNotOptimizeAway(d);
+		// });
+
+		const char* ptr = str.c_str();
 		tinge::successln(part2(ptr));
+
 	} catch (const util::Error& e) {
 		auto [line, column] = util::calculate_position(str.c_str(), ptr);
 		tinge::errorln("error @ [", std::to_string(line), ": ", std::to_string(column), "]: ", e.what());

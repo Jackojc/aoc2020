@@ -1,3 +1,6 @@
 [submodule "tinge"]
 	path = tinge
 	url = https://github.com/Jackojc/tinge
+[submodule "nanobench"]
+	path = nanobench
+	url = https://github.com/martinus/nanobench
