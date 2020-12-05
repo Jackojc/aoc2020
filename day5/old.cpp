@@ -34,7 +34,7 @@ inline void calc(const std::string& str, const F& func) {
 	};
 
 	for (int i = 0; i < (int)str.size() - 11; i += 11)
-		func(find_rc(str.c_str() + i));
+		func(find_rc(str.data() + i));
 }
 
 inline int part1(const std::string& str) {
@@ -50,22 +50,19 @@ inline int part1(const std::string& str) {
 
 inline int part2(const std::string& str) {
 	// Gather all IDs.
+	std::vector<int> ids;
+	ids.reserve(str.size() / 11);
 
-	int min = std::numeric_limits<int>::max();
-	int max = 0;
-
-	int total = 0;
-
-	calc(str, [&] (int id) {
-		min = id < min ? id: min;
-		max = id > max ? id: max;
-
-		total += id;
+	calc(str, [&ids] (int id) {
+		ids.emplace_back(id);
 	});
 
-	int sum = (max - min + 1) * (min + max) / 2;
+	std::sort(std::execution::unseq, ids.begin(), ids.end());
 
-	return sum - total;
+	// Find two adjadent values that differ by 2.
+	return *std::adjacent_find(std::execution::unseq, ids.begin(), ids.end(), [] (const int left, const int right) {
+		return left + 1 < right;
+	}) + 1;
 }
 
 int main(int argc, const char* argv[]) {
