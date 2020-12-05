@@ -154,7 +154,6 @@ namespace util {
 
 	constexpr std::string_view parse_identifier(const char*& ptr) {
 		const char *begin = nullptr, *end = nullptr;
-		std::string_view v;
 
 		if (util::is_identifier(*ptr)) {
 			begin = ptr;
