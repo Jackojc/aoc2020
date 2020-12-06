@@ -18,6 +18,7 @@
 // Calculate seat IDs.
 template <typename F>
 inline void calc(const std::string& str, const F& func) {
+
 	const auto find_rc = [] (const char* const ptr) {
 		int num = 0;
 
@@ -25,7 +26,7 @@ inline void calc(const std::string& str, const F& func) {
 			num *= 2;
 
 			switch (*(ptr + i)) {
-				case 'B': num += 1; break;
+				case 'B':
 				case 'R': num += 1; break;
 			}
 		}
@@ -33,8 +34,9 @@ inline void calc(const std::string& str, const F& func) {
 		return num;
 	};
 
-	for (int i = 0; i < (int)str.size() - 11; i += 11)
+	for (int i = 0; i <= (int)str.size() - 11; i += 11) {
 		func(find_rc(str.c_str() + i));
+	}
 }
 
 inline int part1(const std::string& str) {
@@ -50,7 +52,6 @@ inline int part1(const std::string& str) {
 
 inline int part2(const std::string& str) {
 	// Gather all IDs.
-
 	int min = std::numeric_limits<int>::max();
 	int max = 0;
 
