@@ -1,6 +1,3 @@
-#include <string_view>
-#include <type_traits>
-#include <execution>
 #include <algorithm>
 #include <chrono>
 #include <vector>
@@ -18,7 +15,6 @@
 // Calculate seat IDs.
 template <typename F>
 inline void calc(const std::string& str, const F& func) {
-
 	const auto find_rc = [] (const char* const ptr) {
 		int num = 0;
 
@@ -79,7 +75,7 @@ int main(int argc, const char* argv[]) {
 
 	#ifdef BENCH
 		using namespace std::chrono_literals;
-		auto bench = ankerl::nanobench::Bench().warmup(50).minEpochIterations(1000).timeUnit(1us, "μs");
+		auto bench = ankerl::nanobench::Bench().warmup(200).minEpochIterations(5000).timeUnit(1us, "μs");
 
 		bench.run("part1", [&] {
 			ankerl::nanobench::doNotOptimizeAway(part1(str));
