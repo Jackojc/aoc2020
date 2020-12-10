@@ -182,6 +182,19 @@ namespace util {
 			skip_whitespace(++ptr);
 	}
 
+
+	constexpr std::string_view consume_whitespace(const char*& ptr) {
+		const char* start = ptr;
+
+		if (util::is_whitespace(*ptr)) {
+			do {
+				++ptr;
+			} while (util::is_whitespace(*ptr));
+		}
+
+		return std::string_view { start, ptr - start };
+	}
+
 	constexpr void parse_char(const char*& ptr, char c) {
 		if (*ptr != c) {
 			throw Error{"expected '", c, "' got '", *ptr, "'"};
