@@ -192,7 +192,7 @@ namespace util {
 			} while (util::is_whitespace(*ptr));
 		}
 
-		return std::string_view { start, ptr - start };
+		return std::string_view { start, (std::string_view::size_type)(ptr - start) };
 	}
 
 	constexpr void parse_char(const char*& ptr, char c) {
