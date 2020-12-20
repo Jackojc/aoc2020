@@ -8,10 +8,8 @@
 
 #define BENCH
 
-#ifdef BENCH
-	#define ANKERL_NANOBENCH_IMPLEMENT
-	#include <nanobench.h>
-#endif
+#define ANKERL_NANOBENCH_IMPLEMENT
+#include <nanobench.h>
 
 
 // Lexer.
@@ -95,13 +93,17 @@ namespace jc {
 
 // Parser.
 namespace jc {
-	inline long expr(Context& ctx, int bias = 0, int min = 0) {
+	struct part1_tag;
+	struct part2_tag;
+
+	template <typename T>
+	inline long expr(Context& ctx, int min = 0) {
 		long res = 0;
 
 		next(ctx);
 
 		if (ctx.current == TOKEN_LPAREN) {
-	 		res = expr(ctx, bias);
+	 		res = expr<T>(ctx);
 			next(ctx); // assume there is a closing paren
 		}
 
@@ -113,7 +115,11 @@ namespace jc {
 		while (ctx.lookahead != TOKEN_EOF) {
 			if (ctx.lookahead == TOKEN_ADD or ctx.lookahead == TOKEN_MUL) {
 				const auto& [op, _] = ctx.lookahead.view;
-				const uint8_t prec = std::array{ 1, 1 + bias } [*op - '*'];
+				uint8_t prec = 1;
+
+				if constexpr(std::is_same_v<T, part2_tag>) {
+					prec = std::array{ 1, 2 } [*op - '*'];
+				}
 
 				if (prec < min)
 					break;
@@ -121,10 +127,10 @@ namespace jc {
 				next(ctx);
 
 				if (ctx.current == TOKEN_ADD)
-					res += expr(ctx, bias, prec + 1);
+					res += expr<T>(ctx, prec + 1);
 
 				else if (ctx.current == TOKEN_MUL)
-					res *= expr(ctx, bias, prec + 1);
+					res *= expr<T>(ctx, prec + 1);
 
 				continue;
 			}
@@ -144,7 +150,7 @@ long part1(const char* ptr) {
 	next(ctx);
 
 	while (ctx.lookahead != jc::TOKEN_EOF)
-		sum += jc::expr(ctx, 0);
+		sum += jc::expr<jc::part1_tag>(ctx);
 
 	return sum;
 }
@@ -155,7 +161,7 @@ long part2(const char* ptr) {
 	next(ctx);
 
 	while (ctx.lookahead != jc::TOKEN_EOF)
-		sum += jc::expr(ctx, 1);
+		sum += jc::expr<jc::part2_tag>(ctx);
 
 	return sum;
 }
@@ -184,8 +190,10 @@ int main(int argc, const char* argv[]) {
 	#endif
 
 
-	tinge::successln(part1(str.c_str()));
-	tinge::successln(part2(str.c_str()));
+	for (int i = 0; i < 1000; i++) {
+		ankerl::nanobench::doNotOptimizeAway(part1(str.c_str()));
+		ankerl::nanobench::doNotOptimizeAway(part2(str.c_str()));
+	}
 
 	return 0;
 }
